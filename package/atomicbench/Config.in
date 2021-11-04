@@ -1,0 +1,8 @@
+config BR2_PACKAGE_ATOMICBENCH
+ bool "atomicbench"
+ help
+  AtomicBench is a benchmark that measures the performance of
+  SMP CPU used in C11/C11++ atomic interface
+
+  https://github.com/plctlab/atomic_benchmark/
+
