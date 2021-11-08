@@ -1,0 +1,6 @@
+
+if [ -f "/usr/bin/atomicbench" ]; then
+	atomicbench
+else
+	echo "atomicbench doesn't exist!!!"
+fi
