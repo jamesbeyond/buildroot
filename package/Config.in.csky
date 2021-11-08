@@ -18,5 +18,6 @@ menu "T-HEAD extension"
 	source "package/fedora-need/Config.in"
 	source "package/coremark/Config.in"
 	source "package/atomicbench/Config.in"
+	source "package/circustent/Config.in"
 	source "package/pts-ci/Config.in"
 endmenu

@@ -4,3 +4,10 @@ if [ -f "/usr/bin/atomicbench" ]; then
 else
 	echo "atomicbench doesn't exist!!!"
 fi
+
+if [ -f "/usr/bin/circustent" ]; then
+	circustent --list
+else
+	echo "circustent doesn't exist!!!"
+fi
+
