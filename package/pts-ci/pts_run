@@ -6,7 +6,22 @@ else
 fi
 
 if [ -f "/usr/bin/circustent" ]; then
-	circustent --list
+	circustent -b RAND_ADD -m 1024 -p 1 -i 100
+	circustent -b RAND_CAS -m 1024 -p 1 -i 100
+	circustent -b STRIDE1_ADD -m 1024 -p 1 -i 100
+	circustent -b STRIDE1_CAS -m 1024 -p 1 -i 100
+	circustent -b STRIDEN_ADD -m 1024 -p 1 -i 100
+	circustent -b STRIDEN_CAS -m 1024 -p 1 -i 100
+	circustent -b PTRCHASE_ADD -m 1024 -p 1 -i 100
+	circustent -b PTRCHASE_CAS -m 1024 -p 1 -i 100
+	circustent -b CENTRAL_ADD -m 1024 -p 1 -i 100
+	circustent -b CENTRAL_CAS -m 1024 -p 1 -i 100
+	circustent -b SG_ADD -m 1024 -p 1 -i 100
+	circustent -b SG_CAS -m 1024 -p 1 -i 100
+	circustent -b SCATTER_ADD -m 1024 -p 1 -i 100
+	circustent -b SCATTER_CAS -m 1024 -p 1 -i 100
+	circustent -b GATHER_ADD -m 1024 -p 1 -i 100
+	circustent -b GATHER_CAS -m 1024 -p 1 -i 100
 else
 	echo "circustent doesn't exist!!!"
 fi
