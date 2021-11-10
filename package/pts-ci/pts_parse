@@ -1,0 +1,22 @@
+#!/bin/bash
+
+while read LINE
+do
+if [ "$GET_START" == "y" ]; then
+	if [[ "$LINE" =~ "end" ]]; then
+		GET_START=n
+	fi
+	echo $LINE >> $OUT
+else
+	if [[ "$LINE" =~ "start" ]]; then
+		GET_START=y
+		TEST=$(echo $LINE | awk '{print $1}')
+		OUT=$ROOT_PATH/$TEST.log
+		echo $LINE > $OUT
+	fi
+fi
+done < $1
+
+# just for test
+cat atomicbench.log
+cat circustent.log
