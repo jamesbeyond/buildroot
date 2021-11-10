@@ -12,11 +12,12 @@ else
 		GET_START=y
 		TEST=$(echo $LINE | awk '{print $1}')
 		OUT=$ROOT_PATH/$TEST.log
+		echo $TEST.log
 		echo $LINE > $OUT
 	fi
 fi
 done < $1
 
 # just for test
-cat atomicbench.log
-cat circustent.log
+# cat atomicbench.log
+# cat circustent.log
