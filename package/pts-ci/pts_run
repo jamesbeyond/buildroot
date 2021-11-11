@@ -1,14 +1,14 @@
 
 if [ -f "/usr/bin/atomicbench" ]; then
-	echo "atomicbench start"
+	echo "atomicbench start>>"
 	atomicbench
-	echo "atomicbench end"
+	echo "atomicbench end<<"
 else
 	echo "atomicbench doesn't exist!!!"
 fi
 
 if [ -f "/usr/bin/circustent" ]; then
-	echo "circustent start"
+	echo "circustent start>>"
 	circustent -b RAND_ADD -m 1024 -p 1 -i 100
 	circustent -b RAND_CAS -m 1024 -p 1 -i 100
 	circustent -b STRIDE1_ADD -m 1024 -p 1 -i 100
@@ -25,7 +25,7 @@ if [ -f "/usr/bin/circustent" ]; then
 	circustent -b SCATTER_CAS -m 1024 -p 1 -i 100
 	circustent -b GATHER_ADD -m 1024 -p 1 -i 100
 	circustent -b GATHER_CAS -m 1024 -p 1 -i 100
-	echo "circustent end"
+	echo "circustent end<<"
 else
 	echo "circustent doesn't exist!!!"
 fi

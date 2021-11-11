@@ -3,12 +3,12 @@
 while read LINE
 do
 if [ "$GET_START" == "y" ]; then
-	if [[ "$LINE" =~ "end" ]]; then
+	if [[ "$LINE" =~ "end<<" ]]; then
 		GET_START=n
 	fi
 	echo $LINE >> $OUT
 else
-	if [[ "$LINE" =~ "start" ]]; then
+	if [[ "$LINE" =~ "start>>" ]]; then
 		GET_START=y
 		TEST=$(echo $LINE | awk '{print $1}')
 		OUT=$ROOT_PATH/$TEST.log
@@ -19,5 +19,14 @@ fi
 done < $1
 
 # just for test
-# cat atomicbench.log
-# cat circustent.log
+if [ -f "atomicbench.log" ]; then
+	echo "atomicbench passed"
+	cat atomicbench.log
+else
+	echo "atomicbench.log not exist"
+
+if [ -f "circustent.log" ]; then
+	echo "circustent passed"
+	cat circustent.log
+else
+	echo "circustent.log not exist"
