@@ -19,14 +19,16 @@ fi
 done < $1
 
 # just for test
-if [ -f "atomicbench.log" ]; then
-	echo "atomicbench passed"
-	cat atomicbench.log
-else
-	echo "atomicbench.log not exist"
+# if [ -f "atomicbench.log" ]; then
+# 	echo "atomicbench passed"
+# 	cat atomicbench.log
+# else
+# 	echo "atomicbench.log not exist"
+# fi
 
-if [ -f "circustent.log" ]; then
-	echo "circustent passed"
-	cat circustent.log
-else
-	echo "circustent.log not exist"
+# if [ -f "circustent.log" ]; then
+# 	echo "circustent passed"
+# 	cat circustent.log
+# else
+# 	echo "circustent.log not exist"
+# fi
