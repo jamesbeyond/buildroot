@@ -34,6 +34,9 @@ BR2_LINUX_KERNEL_CONFIG_FRAGMENT_FILES="package/linux-patch-c910/linux-5.1.confi
 BR2_TARGET_OPENSBI=y
 BR2_TARGET_OPENSBI_USE_PLAT=y
 
+# Busybox
+BR2_PACKAGE_BUSYBOX_CONFIG_FRAGMENT_FILES="package/busybox/busybox.config.fragment"
+
 # Qemu
 BR2_PACKAGE_QEMU_ENHANCED=y
 
