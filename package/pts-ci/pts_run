@@ -1,31 +1,47 @@
 
 if [ -f "/usr/bin/atomicbench" ]; then
-	echo "atomicbench start>>"
+	echo "pts atomicbench start"
 	atomicbench
-	echo "atomicbench end<<"
+	echo "pts atomicbench end"
 else
 	echo "atomicbench doesn't exist!!!"
 fi
 
 if [ -f "/usr/bin/circustent" ]; then
-	echo "circustent start>>"
+	echo "pts circustent start"
+	echo "RAND_ADD"
 	circustent -b RAND_ADD -m 1024 -p 1 -i 100
+	echo "RAND_CAS"
 	circustent -b RAND_CAS -m 1024 -p 1 -i 100
+	echo "STRIDE1_ADD"
 	circustent -b STRIDE1_ADD -m 1024 -p 1 -i 100
+	echo "STRIDE1_CAS"
 	circustent -b STRIDE1_CAS -m 1024 -p 1 -i 100
+	echo "STRIDEN_ADD"
 	circustent -b STRIDEN_ADD -m 1024 -p 1 -i 100
+	echo "STRIDEN_CAS"
 	circustent -b STRIDEN_CAS -m 1024 -p 1 -i 100
+	echo "PTRCHASE_ADD"
 	circustent -b PTRCHASE_ADD -m 1024 -p 1 -i 100
+	echo "PTRCHASE_CAS"
 	circustent -b PTRCHASE_CAS -m 1024 -p 1 -i 100
+	echo "CENTRAL_ADD"
 	circustent -b CENTRAL_ADD -m 1024 -p 1 -i 100
+	echo "CENTRAL_CAS"
 	circustent -b CENTRAL_CAS -m 1024 -p 1 -i 100
+	echo "SG_ADD"
 	circustent -b SG_ADD -m 1024 -p 1 -i 100
+	echo "SG_CAS"
 	circustent -b SG_CAS -m 1024 -p 1 -i 100
+	echo "SCATTER_ADD"
 	circustent -b SCATTER_ADD -m 1024 -p 1 -i 100
+	echo "SCATTER_CAS"
 	circustent -b SCATTER_CAS -m 1024 -p 1 -i 100
+	echo "GATHER_ADD"
 	circustent -b GATHER_ADD -m 1024 -p 1 -i 100
+	echo "GATHER_CAS"
 	circustent -b GATHER_CAS -m 1024 -p 1 -i 100
-	echo "circustent end<<"
+	echo "pts circustent end"
 else
 	echo "circustent doesn't exist!!!"
 fi
