@@ -2,6 +2,7 @@
 
 #pasre current data
 
+BENCH_LIST="atomicbench circustent"
 ANOTHER_LIST="4b d1 unmatched qemu"
 CIRCUSTENT_BENCH=("RAND_ADD" "RAND_CAS" "STRIDE1_ADD" "STRIDE1_CAS" "STRIDEN_ADD" "STRIDEN_CAS" "PTRCHASE_ADD" "PTRCHASE_CAS" "CENTRAL_ADD" "CENTRAL_CAS" "SG_ADD" "SG_CAS" "SCATTER_ADD" "SCATTER_CAS" "GATHER_ADD" "GATHER_CAS")
 
@@ -9,20 +10,34 @@ GET_START=n
 OUTPUT_PATH=$(dirname "$0")/../../../
 REPORT_PATH=$OUTPUT_PATH/images
 
-REPORT_FILENAME=pts_report.log
+REPORT_FILENAME=pts_report.md
+REPORT_FILE=$REPORT_PATH/$REPORT_FILENAME
 
-if [ -f $REPORT_PATH/$REPORT_FILENAME ]; then
-	rm $REPORT_PATH/$REPORT_FILENAME
+#Clean and Init Report File
+if [ -f "$REPORT_FILE" ]; then
+	rm $REPORT_FILE
 fi
-touch $REPORT_PATH/$REPORT_FILENAME
+touch $REPORT_FILE
 
-clean_bench_file() {
-	if [ -f $1 ]; then
-		rm $1
-	fi
+# public
+init_report_head(){
+	echo "# PTS Report  "
+	echo "## Platfrom Info  "
+	PI_NAME=`cat $1 | grep "Platform Name" | awk -F : '{print $2}'`
+	PI_ISA=`cat $1 | grep "Boot HART ISA" | awk -F : '{print $2}'`
+	echo "  > Platform Name : $PI_NAME  "
+	echo "  > Platform ISA : $PI_ISA  "
+	echo "## Benchmark Info  "
+	echo "  > Bench : $BENCH_LIST   "
+	echo "## Reference Platform Info   "
+	echo "  > Bench : $ANOTHER_LIST   "
+	echo ""
+	echo " **TODO: Add more info for  Platform and Benchmark**    "
+	echo ""
+	echo "---    "
 }
 
-tmp_bench_file() {
+obtain_bench_file() {
 	while read LINE
 	do
 	if [ "$GET_START" == "y" ]; then
@@ -36,68 +51,121 @@ tmp_bench_file() {
 			GET_START=y
 		fi
 	fi
-done < $1
+	done < $1
 }
 
+insert_raw_data() {
+	echo " \`\`\` " >> $REPORT_FILE
+	cat $1 >> $REPORT_FILE
+	echo " \`\`\` " >> $REPORT_FILE
+}
+
+insert_pic_data() {
+	cp $(dirname "$0")/gnuplot/$1.gnuplot ./
+	gnuplot $1.gnuplot
+	mv $1.png $REPORT_PATH/pts
+	rm $1.gnuplot
+	echo ""
+	echo "  ![$1](pts/$1.png)  "
+	echo ""
+}
+
+clean_bench_file() {
+	if [ -f $1 ]; then
+		rm $1
+	fi
+}
+
+# atomicbench func
 analyze_atomicbench() {
-	echo "analyze atomicbench by SWP/CAS/FFA"
-	echo "TODO: set ram size for test"
+
+	if [ -f "$REPORT_PATH/ATOMICBENCH_FAX.txt" ]; then
+		rm $REPORT_PATH/ATOMICBENCH_FAX.txt
+	fi
+	CPUS=`cat atomicbench.log | grep "cpus" | awk '{print $2}'`
+	FAA=`cat atomicbench.log | grep "add test cost" | awk -F : '{print $2}'`
+	FAN=`cat atomicbench.log | grep "and test cost" | awk -F : '{print $2}'`
+	FAO=`cat atomicbench.log | grep "or test cost" | awk -F : '{print $2}'`
+	FAS=`cat atomicbench.log | grep "sub test cost" | awk -F : '{print $2}'`
+	FAX=`cat atomicbench.log | grep "xor test cost" | awk -F : '{print $2}'`
+	echo "$FAA" | sed 's/^/FAA/' >> $REPORT_PATH/ATOMICBENCH_FAX.txt
+	echo "$FAN" | sed 's/^/FAN/' >> $REPORT_PATH/ATOMICBENCH_FAX.txt
+	echo "$FAO" | sed 's/^/FAO/' >> $REPORT_PATH/ATOMICBENCH_FAX.txt
+	echo "$FAS" | sed 's/^/FAS/' >> $REPORT_PATH/ATOMICBENCH_FAX.txt
+	echo "$FAX" | sed 's/^/FAX/' >> $REPORT_PATH/ATOMICBENCH_FAX.txt
+
+	if [ -f "$REPORT_PATH/ATOMICBENCH_FAX.txt" ]; then
+		awk '$0=NR" "$0' $REPORT_PATH/ATOMICBENCH_FAX.txt > ATOMICBENCH_FAX.dat
+		rm $REPORT_PATH/ATOMICBENCH_FAX.txt
+	fi
+
+	echo "### AtomicBench Analyze  "
+	echo "> analyze atomicbench by SWP/CAS/FAA  "
+	echo "> TODO: set ram size for test  "
+	if [ -f "ATOMICBENCH_FAX.dat" ]; then
+			insert_pic_data atomicbench_fax  >> $REPORT_FILE
+	fi
+
+	rm ATOMICBENCH_FAX.dat
 }
 
-
-mc_num=0
 evaluation_atomicbench()
 {
-	echo "evaluation atomicbench by SCORE"
-	SCORE=`cat atomicbench.log | grep score | awk '{print $3}'`
-	((mc_num++));
 	if [ -f "$REPORT_PATH/ATOMICBENCH_SCORE.txt" ]; then
 		rm $REPORT_PATH/ATOMICBENCH_SCORE.txt
 	fi
-	echo  "$mc_num current $SCORE" | tee -a $REPORT_PATH/ATOMICBENCH_SCORE.txt
+
+	mc_num=0
+	SCORE=`cat atomicbench.log | grep score | awk '{print $3}'`
+	((mc_num++));
+	echo  "$mc_num current $SCORE" >> $REPORT_PATH/ATOMICBENCH_SCORE.txt
+
 	for MC in $ANOTHER_LIST; do
 		if [ -f "$(dirname "$0")/lastest/$MC.log" ]; then
-			tmp_bench_file $(dirname "$0")/lastest/$MC.log  atomicbench atomicbench_$MC
+			obtain_bench_file $(dirname "$0")/lastest/$MC.log  atomicbench atomicbench_$MC
 			SCORE=`cat atomicbench_$MC.log | grep score | awk '{print $3}'`
 			((mc_num++));
-			echo  "$mc_num $MC $SCORE" | tee -a $REPORT_PATH/ATOMICBENCH_SCORE.txt
+			echo  "$mc_num $MC $SCORE" >> $REPORT_PATH/ATOMICBENCH_SCORE.txt
 			clean_bench_file atomicbench_$MC.log
 		fi
 	done
+
 	if [ -f "$REPORT_PATH/ATOMICBENCH_SCORE.txt" ]; then
-		cp $(dirname "$0")/gnuplot/atomicbench.gnuplot $REPORT_PATH/
-		cp $REPORT_PATH/ATOMICBENCH_SCORE.txt ./
-		gnuplot $REPORT_PATH/atomicbench.gnuplot
-		mv AtomicBench.png $REPORT_PATH/AtomicBench.png
-		rm ./ATOMICBENCH_SCORE.txt
-		rm $REPORT_PATH/atomicbench.gnuplot
+		cat $REPORT_PATH/ATOMICBENCH_SCORE.txt > ATOMICBENCH_SCORE.dat
 		rm $REPORT_PATH/ATOMICBENCH_SCORE.txt
 	fi
-}
 
-pasre_atomicbench() {
-	tmp_bench_file $1 atomicbench atomicbench
-	if [ -f atomicbench.log ]; then
-		cat atomicbench.log >> $REPORT_PATH/$REPORT_FILENAME
-		analyze_atomicbench >> $REPORT_PATH/$REPORT_FILENAME
-		evaluation_atomicbench >> $REPORT_PATH/$REPORT_FILENAME
-		clean_bench_file atomicbench.log
+	echo "### Evaluation AtomicBench by SCORE  "
+	echo "> evaluation atomicbench by SCORE  "
+	echo "> TODO: add evaluation by  SWP/CAS/FAA  "
+
+	if [ -f "ATOMICBENCH_SCORE.dat" ]; then
+		insert_pic_data atomicbench  >> $REPORT_FILE
 	fi
 }
 
+# circustent func
 update_data()
 {
 	num=0
 	while read line
 	do
-		echo "${CIRCUSTENT_BENCH[$num]} $line" | tee -a $2
+		echo "${CIRCUSTENT_BENCH[$num]} $line"
 		((num++));
 	done < $1
 }
 
+analyze_circustent() {
+	echo "### CircusTent Analyze  "
+	echo "> analyze circustent by size  "
+	echo "> TODO: set ram size for test  "
+	echo ""
+	echo " No detailed work at the moment "
+	echo ""
+}
+
 evaluation_circustent(){
-	echo "evaluation circustent by Giga AMOs/sec (GAMS)"
-	echo  "current machine"
+
 	mc_num=0
 	if [ -f "$REPORT_PATH/CIRCUSTENT_TIMING.txt" ]; then
 		rm $REPORT_PATH/CIRCUSTENT_TIMING.txt
@@ -106,75 +174,88 @@ evaluation_circustent(){
 	if [ -f "$REPORT_PATH/CIRCUSTENT_GAMS.txt" ]; then
 		rm $REPORT_PATH/CIRCUSTENT_GAMS.txt
 	fi
+
 	if [ -f circustent.log ]; then
 		((mc_num++));
 		TIMING=`cat circustent.log | grep Timing | awk '{print $4}' | sed 's/^/'$mc_num' current /'`
 		GAMS=`cat circustent.log | grep GAMS | awk '{print $5}' | sed 's/^/'$mc_num' current /'`
 		echo "$TIMING" > tmp1.txt
-		update_data tmp1.txt  $REPORT_PATH/CIRCUSTENT_TIMING.txt
+		update_data tmp1.txt  >> $REPORT_PATH/CIRCUSTENT_TIMING.txt
 		rm tmp1.txt
 		echo "$GAMS" > tmp2.txt
-		update_data tmp2.txt $REPORT_PATH/CIRCUSTENT_GAMS.txt
+		update_data tmp2.txt  >> $REPORT_PATH/CIRCUSTENT_GAMS.txt
 		rm tmp2.txt
 	fi
 
 	for MC in $ANOTHER_LIST; do
 		if [ -f "$(dirname "$0")/lastest/$MC.log" ]; then
-			tmp_bench_file $(dirname "$0")/lastest/$MC.log  circustent circustent_$MC
+			obtain_bench_file $(dirname "$0")/lastest/$MC.log  circustent circustent_$MC
 			((mc_num++));
 			TIMING=`cat circustent_$MC.log | grep Timing | awk '{print $4}' | sed 's/^/'$mc_num' '$MC' /'`
 			GAMS=`cat circustent_$MC.log | grep GAMS | awk '{print $5}' | sed 's/^/'$mc_num' '$MC' /'`
 			echo "$TIMING" > tmp1.txt
-			update_data tmp1.txt  $REPORT_PATH/CIRCUSTENT_TIMING.txt
+			update_data tmp1.txt >> $REPORT_PATH/CIRCUSTENT_TIMING.txt
 			rm tmp1.txt
 			echo "$GAMS" > tmp2.txt
-			update_data tmp2.txt $REPORT_PATH/CIRCUSTENT_GAMS.txt
+			update_data tmp2.txt >> $REPORT_PATH/CIRCUSTENT_GAMS.txt
 			rm tmp2.txt
 			clean_bench_file circustent_$MC.log
 		fi
 	done
 
 	if [ -f "$REPORT_PATH/CIRCUSTENT_TIMING.txt" ]; then
-		cp $(dirname "$0")/gnuplot/circustent_timing.gnuplot $REPORT_PATH/
-		cp $REPORT_PATH/CIRCUSTENT_TIMING.txt ./
-		gnuplot $REPORT_PATH/circustent_timing.gnuplot
-		mv TIMING.png $REPORT_PATH/TIMING.png
-		rm ./CIRCUSTENT_TIMING.txt
-		rm $REPORT_PATH/circustent_timing.gnuplot
+		cat $REPORT_PATH/CIRCUSTENT_TIMING.txt > CIRCUSTENT_TIMING.dat
 		rm $REPORT_PATH/CIRCUSTENT_TIMING.txt
 	fi
 
+	echo "### Evaluation CircusTent by TIMING  "
+	if [ -f "CIRCUSTENT_TIMING.dat" ]; then
+		insert_pic_data circustent_timing  >> $REPORT_FILE
+	fi
+
 	if [ -f "$REPORT_PATH/CIRCUSTENT_GAMS.txt" ]; then
-		cp $(dirname "$0")/gnuplot/circustent_gams.gnuplot $REPORT_PATH/
-		cp $REPORT_PATH/CIRCUSTENT_GAMS.txt ./
-		gnuplot $REPORT_PATH/circustent_gams.gnuplot
-		mv GAMS.png $REPORT_PATH/GAMS.png
-		rm ./CIRCUSTENT_GAMS.txt
-		rm $REPORT_PATH/circustent_gams.gnuplot
+		cat $REPORT_PATH/CIRCUSTENT_GAMS.txt > CIRCUSTENT_GAMS.dat
 		rm $REPORT_PATH/CIRCUSTENT_GAMS.txt
+	fi
+
+	echo "### Evaluation CircusTent by Giga AMOs/sec (GAMS)  "
+	if [ -f "CIRCUSTENT_GAMS.dat" ]; then
+		insert_pic_data circustent_gams  >> $REPORT_FILE
+	fi
+}
+
+pasre_atomicbench() {
+	obtain_bench_file $1 atomicbench atomicbench
+	if [ -f atomicbench.log ]; then
+		insert_raw_data atomicbench.log
+		analyze_atomicbench >> $REPORT_FILE
+		evaluation_atomicbench >> $REPORT_FILE
+		clean_bench_file atomicbench.log
 	fi
 }
 
 pasre_circustent() {
-	tmp_bench_file $1 circustent circustent
+	obtain_bench_file $1 circustent circustent
 	if [ -f circustent.log ]; then
-		cat circustent.log >> $REPORT_PATH/$REPORT_FILENAME
-		evaluation_circustent >> $REPORT_PATH/$REPORT_FILENAME
+		insert_raw_data circustent.log
+		analyze_circustent	>> $REPORT_FILE
+
+		evaluation_circustent >> $REPORT_FILE
 		clean_bench_file circustent.log
 	fi
 }
 
+
+# All benchmark use three step
+# step1: pasre log and data
+# step2: analyze data for pictrue
+# step3：evaluation with other
 pasre_bench() {
-	echo "will pasre $2 in $1"
 	case $2 in
 	atomicbench)
-		echo "start pasre atomicbench"
-		echo "AtomicBench in Current Machine" >> $REPORT_PATH/$REPORT_FILENAME
 		pasre_atomicbench $1
 		;;
 	circustent)
-		echo "start pasre circustent"
-		echo "CircusTent in Current Machine" >> $REPORT_PATH/$REPORT_FILENAME
 		pasre_circustent $1
 		;;
  	*)
@@ -184,17 +265,27 @@ pasre_bench() {
 	esac
 }
 
-echo "================== PTS ==================" >> $REPORT_PATH/$REPORT_FILENAME
-echo "TODO: add test machine info" >> $REPORT_PATH/$REPORT_FILENAME
-echo "================== PTS ==================" >> $REPORT_PATH/$REPORT_FILENAME
-
 if [ -f "pts.log" ]; then
-	pasre_bench pts.log atomicbench
-	echo "=========================================" >> $REPORT_PATH/$REPORT_FILENAME
-	pasre_bench pts.log circustent
+	mkdir -p $REPORT_PATH/pts
+	init_report_head test.log >> $REPORT_FILE
+	for BENCH in $BENCH_LIST; do
+		echo "## $BENCH  " >> $REPORT_FILE
+		pasre_bench pts.log $BENCH
+	done
 else
 	echo "pts.log not exist"
 fi
 
-echo "================== PTS  END ==================" >> $REPORT_PATH/$REPORT_FILENAME
-dos2unix $REPORT_PATH/$REPORT_FILENAME
+
+# dos2unix $REPORT_PATH/$REPORT_FILENAME
+
+# enscript -p $REPORT_PATH/pts_test.ps $REPORT_PATH/$REPORT_FILENAME
+# cat $REPORT_PATH/AtomicBench.ps >> $REPORT_PATH/pts_test.ps
+# cat $REPORT_PATH/CircusTent_GAMS.ps >> $REPORT_PATH/pts_test.ps
+# cat $REPORT_PATH/CircusTent_Timing.ps >> $REPORT_PATH/pts_test.ps
+# ps2pdf $REPORT_PATH/pts_test.ps $REPORT_PATH/pts_test.pdf
+# ps2pdf $REPORT_PATH/pts_22.ps $REPORT_PATH/pts_22.pdf
+# rm $REPORT_PATH/pts_test.ps
+# rm $REPORT_PATH/AtomicBench.ps
+# rm $REPORT_PATH/CircusTent_GAMS.ps
+# rm $REPORT_PATH/CircusTent_Timing.ps
