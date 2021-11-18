@@ -266,6 +266,7 @@ pasre_bench() {
 }
 
 if [ -f "pts.log" ]; then
+	cp pts.log $REPORT_PATH/
 	mkdir -p $REPORT_PATH/pts
 	init_report_head test.log >> $REPORT_FILE
 	for BENCH in $BENCH_LIST; do
