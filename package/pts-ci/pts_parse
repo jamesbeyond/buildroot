@@ -265,18 +265,24 @@ pasre_bench() {
 	esac
 }
 
+#diable for test
+# if [ -f "pts.log" ]; then
+# 	cp pts.log $REPORT_PATH/
+# 	mkdir -p $REPORT_PATH/pts
+# 	init_report_head test.log >> $REPORT_FILE
+# 	for BENCH in $BENCH_LIST; do
+# 		echo "## $BENCH  " >> $REPORT_FILE
+# 		pasre_bench pts.log $BENCH
+# 	done
+# else
+# 	echo "pts.log not exist"
+# fi
+
 if [ -f "pts.log" ]; then
-	cp pts.log $REPORT_PATH/
-	mkdir -p $REPORT_PATH/pts
-	init_report_head test.log >> $REPORT_FILE
-	for BENCH in $BENCH_LIST; do
-		echo "## $BENCH  " >> $REPORT_FILE
-		pasre_bench pts.log $BENCH
-	done
+	cp pts.log $REPORT_PATH/pts.log
 else
 	echo "pts.log not exist"
 fi
-
 
 # dos2unix $REPORT_PATH/$REPORT_FILENAME
 
