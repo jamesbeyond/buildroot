@@ -1,0 +1,11 @@
+config BR2_PACKAGE_LITMUS_TEST
+	bool "riscv litmus test"
+	depends on BR2_riscv
+	depends on BR2_PACKAGE_HOST_HERDTOOLS7
+	help
+	  The tests can also be used for memroy order test.
+
+	  https://github.com/litmus-tests/litmus-tests-riscv
+
+comment "riscv litmus test needs herdtools7"
+	depends on  !BR2_PACKAGE_HOST_HERDTOOLS7
