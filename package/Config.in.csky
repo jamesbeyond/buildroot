@@ -20,4 +20,6 @@ menu "T-HEAD extension"
 	source "package/atomicbench/Config.in"
 	source "package/circustent/Config.in"
 	source "package/pts-ci/Config.in"
+	source "package/go-ci/Config.in"
+	source "package/openjdk-ci/Config.in"
 endmenu
