@@ -14,8 +14,9 @@ OPENJDK_CI_ROOT = $(TARGET_DIR)/ci/openjdk
 define OPENJDK_CI_INSTALL_TARGET_CMDS
 	mkdir -p $(OPENJDK_CI_ROOT)
 	cp -a $(PWD)/../dl/openjdk-ci/SPECjvm2008_1_01_setup.jar $(OPENJDK_CI_ROOT)/
-	cp -f $(PWD)/../package/openjdk-ci/openjdk-ci.sh $(OPENJDK_CI_ROOT)/
-    chmod a+x $(OPENJDK_CI_ROOT)/openjdk-ci.sh
+
+	cp -f ./package/openjdk-ci/openjdk_run $(TARGET_DIR)/etc/init.ci/
+	chmod a+x $(TARGET_DIR)/etc/init.ci/openjdk_run
 endef
 
 $(eval $(generic-package))

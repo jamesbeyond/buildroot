@@ -1,0 +1,16 @@
+#!/bin/bash
+
+cat /proc/cmdline | grep -E 'qemuci'
+if [ $? -ne 0 ]
+then
+		echo "Skip the ci test"
+		exit 0
+else
+		echo "Just do go dist test build"
+fi
+
+if [ -f "/usr/bin/litmus/run.exe" ]; then
+	echo " will run litmus test"
+else
+	echo "litmus doesn't exist!!!"
+fi

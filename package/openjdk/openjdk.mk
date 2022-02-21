@@ -133,10 +133,6 @@ ifeq ($(BR2_aarch64),y)
 OPENJDK_CONF_OPTS += --with-abi-profile=aarch64
 endif
 
-ifeq ($(BR2_RISCV_64),y)
-OPENJDK_CONF_OPTS += --with-abi-profile=riscv64
-endif
-
 ifeq ($(BR2_CCACHE),y)
 OPENJDK_CONF_OPTS += \
 	--enable-ccache \

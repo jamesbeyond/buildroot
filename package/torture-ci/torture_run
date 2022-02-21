@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ "$(ls -A /lib/modules/*/kernel/kernel/)" ]; then
+	echo "will run torture test"
+else
+	echo "torture doesn't exist!!!"
+fi

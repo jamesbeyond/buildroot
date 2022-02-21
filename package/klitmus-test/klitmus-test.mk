@@ -29,6 +29,9 @@ define KLITMUS_TEST_INSTALL_TARGET_CMDS
 		mkdir -p $(TARGET_DIR)/lib/modules/$(LINUX_VERSION_PROBED)/kernel/klitmus/$(f)
 		$(INSTALL) -m 0755 $(@D)/klitmus/$(f)/litmus000.ko $(TARGET_DIR)/lib/modules/$(LINUX_VERSION_PROBED)/kernel/klitmus/$(f)/litmus000.ko
 	)
+
+	cp -f ./package/klitmus-test/klitmus_run $(TARGET_DIR)/etc/init.ci/
+	chmod a+x $(TARGET_DIR)/etc/init.ci/klitmus_run
 endef
 
 $(eval $(generic-package))

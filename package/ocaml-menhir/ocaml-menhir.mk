@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-OCAML_MENHIR_VERSION = master
+OCAML_MENHIR_VERSION = 20211230
 OCAML_MENHIR_SOURCE = menhir-$(OCAML_MENHIR_VERSION).tar.gz
 OCAML_MENHIR_SITE = https://gitlab.inria.fr/fpottier/menhir/-/archive/$(OCAML_MENHIR_VERSION)
 OCAML_MENHIR_LICENSE = LGPL-2.1

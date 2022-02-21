@@ -35,8 +35,8 @@ endef
 
 define GO_CI_INSTALL_TARGET_CMDS
 	mkdir -p $(HOST_GOBOOTSTRAP_TAR_ROOT)
-	cp -f $(PWD)/../package/go-ci/go-ci.sh $(HOST_GOBOOTSTRAP_TAR_ROOT)/
-    chmod a+x $(HOST_GOBOOTSTRAP_TAR_ROOT)/go-ci.sh
+	cp -f ./package/go-ci/go_run $(TARGET_DIR)/etc/init.ci/
+	chmod a+x $(TARGET_DIR)/etc/init.ci/go_run
 	cp -a $(@D)/../go-linux-riscv64-bootstrap.tbz $(HOST_GOBOOTSTRAP_TAR_ROOT)/
 	cp $(TOPDIR)/../dl/go-ci/go$(GO_CI_VERSION).src.tar.gz  $(HOST_GOBOOTSTRAP_TAR_ROOT)/
 	rm $(@D)/../go-linux-riscv64-bootstrap.tbz
