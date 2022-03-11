@@ -1,16 +1,17 @@
 #!/bin/bash
 
-cat /proc/cmdline | grep -E 'qemuci'
-if [ $? -ne 0 ]
+cpunum=`cat /proc/cpuinfo | grep name | wc -l`
+if [ $cpunum -gt 1 ]
 then
-		echo "Skip the ci test"
+		echo "Litmus should run on smp"
 		exit 0
 else
-		echo "Just do go dist test build"
+		echo "RISC-V Litmus Test"
 fi
 
 if [ -f "/usr/bin/litmus/run.exe" ]; then
-	echo " will run litmus test"
+	echo " run litmus test with mixed param"
+	
 else
 	echo "litmus doesn't exist!!!"
 fi

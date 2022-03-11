@@ -1,6 +1,5 @@
 config BR2_PACKAGE_GO_CI
 	bool "go ci test"
-	default y
 	depends on BR2_RISCV_64
 	help
 	  base on buildroot GO CI test
