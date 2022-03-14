@@ -13,7 +13,7 @@ choice
 	prompt "LITMUS TEST MODE"
 	default BR2_PACKAGE_LITMUS_TEST_PART
 	help
-	  Select the version of OpenJDK you wish to use.
+	  Select the mode of litmus you wish to use.
 
 	config BR2_PACKAGE_LITMUS_TEST_PART
 		bool "part"
