@@ -17,4 +17,5 @@ menu "T-HEAD extension"
 	source "package/csky-jtag/Config.in"
 	source "package/fedora-need/Config.in"
 	source "package/coremark/Config.in"
+	source "package/atomicbench/Config.in"
 endmenu
