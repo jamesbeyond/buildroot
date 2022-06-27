@@ -16,6 +16,8 @@ define OPENJDK_CI_INSTALL_TARGET_CMDS
 	cp -a $(PWD)/../dl/openjdk-ci/SPECjvm2008_1_01_setup.jar $(OPENJDK_CI_ROOT)/
 
 	cp -f ./package/openjdk-ci/openjdk_run $(TARGET_DIR)/etc/init.ci/
+	cp -f ./package/openjdk-ci/openjdk_run_test $(TARGET_DIR)/etc/init.ci/
+	cp -f ./package/openjdk-ci/jdk.sh $(TARGET_DIR)/etc/profile.d/
 	chmod a+x $(TARGET_DIR)/etc/init.ci/openjdk_run
 endef
 

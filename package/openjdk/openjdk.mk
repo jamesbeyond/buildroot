@@ -90,30 +90,38 @@ OPENJDK_INSTALL_BASE = /usr/lib/jvm
 # OpenJDK defaults ld to the ld binary but passes -Xlinker and -z as
 # arguments during the linking process, which causes compilation failures.
 # To fix this issue, LD is set to point to gcc.
+DEBUG_LEVEL=release
 OPENJDK_CONF_ENV = \
 	PATH=$(BR_PATH) \
 	CC=$(TARGET_CC) \
 	CPP=$(TARGET_CPP) \
 	CXX=$(TARGET_CXX) \
-	LD=$(TARGET_CC) \
-	BUILD_SYSROOT_CFLAGS="$(HOST_CFLAGS)" \
+	LD=$(TARGET_LD) \
+	AR=$(TARGET_AR) \
+	NM=$(TARGET_NM) \
+	OBJDUMP=$(TARGET_OBJDUMP) \
+	OBJCOPY=$(TARGET_OBJCOPY) \
+	READELF=$(TARGET_READELF)
+	STRIP=$(TARGET_STRIP) \
+	BUILD_SYSROOT_CFLAGS="$(HOST_CFLAGS) -g" \
 	BUILD_SYSROOT_LDFLAGS="$(HOST_LDFLAGS)"
-
+TOOLCHAIN_PATH=${HOST_DIR}/bin
+#	--openjdk-target=$(GNU_TARGET_NAME) 
 OPENJDK_CONF_OPTS = \
 	--disable-full-docs \
-	--disable-hotspot-gtest \
 	--disable-manpages \
 	--disable-warnings-as-errors \
 	--enable-headless-only \
 	--enable-openjdk-only \
 	--enable-unlimited-crypto \
-	--openjdk-target=$(GNU_TARGET_NAME) \
+	--openjdk-target=riscv64-unknown-linux-gnu \
+	--with-toolchain-path=${TOOLCHAIN_PATH} \
 	--with-boot-jdk=$(HOST_OPENJDK_BIN_ROOT_DIR) \
 	--with-stdc++lib=dynamic \
-	--with-debug-level=release \
+	--with-debug-level=${DEBUG_LEVEL} \
 	--with-devkit=$(HOST_DIR) \
-	--with-extra-cflags="$(TARGET_CFLAGS)" \
-	--with-extra-cxxflags="$(TARGET_CXXFLAGS)" \
+	--with-extra-cflags="$(TARGET_CFLAGS) -g " \
+	--with-extra-cxxflags="$(TARGET_CXXFLAGS) -g " \
 	--with-extra-ldflags="-Wl,-rpath,$(OPENJDK_INSTALL_BASE)/lib,-rpath,$(OPENJDK_INSTALL_BASE)/lib/$(OPENJDK_JVM_VARIANT)" \
 	--with-giflib=system \
 	--with-jobs=$(PARALLEL_JOBS) \
@@ -122,11 +130,11 @@ OPENJDK_CONF_OPTS = \
 	--with-libjpeg=system \
 	--with-libpng=system \
 	--with-zlib=system \
-	--with-native-debug-symbols=none \
+	--with-native-debug-symbols=external \
 	--without-version-pre \
 	--with-sysroot=$(STAGING_DIR) \
 	--with-version-build="$(OPENJDK_VERSION_MAJOR)" \
-	--with-version-string="$(OPENJDK_VERSION_MAJOR)"
+	--with-version-string="$(OPENJDK_VERSION_MAJOR)" 
 
 # If building for AArch64, use the provided CPU port.
 ifeq ($(BR2_aarch64),y)
@@ -142,34 +150,42 @@ endif
 # Autogen and configure are performed in a single step.
 define OPENJDK_CONFIGURE_CMDS
 	chmod +x $(@D)/configure
+	echo $(OPENJDK_CONF_OPTS)
 	cd $(@D); $(OPENJDK_CONF_ENV) ./configure autogen $(OPENJDK_CONF_OPTS)
 endef
 
 # Make -jn is unsupported. Instead, set the "--with-jobs=" configure option,
 # and use $(MAKE1).
 define OPENJDK_BUILD_CMDS
-	$(TARGET_MAKE_ENV) $(OPENJDK_CONF_ENV) $(MAKE1) -C $(@D) $(OPENJDK_MAKE_TARGET)
+	$(TARGET_MAKE_ENV) $(OPENJDK_CONF_ENV) $(MAKE1) -C $(@D) $(OPENJDK_MAKE_TARGET) LOG=cmdlines
 endef
 
 # Calling make install always builds and installs the JDK instead of the JRE,
 # which makes manual installation necessary.
+
+#	cd $(TARGET_DIR)/usr/bin && ln -snf ../..$(OPENJDK_INSTALL_BASE)/bin/* .
+#	cp -dpfr $(@D)/build/linux-*-${DEBUG_LEVEL}/images/$(OPENJDK_VARIANT)/* \
+		$(TARGET_DIR)$(OPENJDK_INSTALL_BASE)/
 define OPENJDK_INSTALL_TARGET_CMDS
 	mkdir -p $(TARGET_DIR)$(OPENJDK_INSTALL_BASE)
-	cp -dpfr $(@D)/build/linux-*-release/images/$(OPENJDK_VARIANT)/* \
-		$(TARGET_DIR)$(OPENJDK_INSTALL_BASE)/
-	cd $(TARGET_DIR)/usr/bin && ln -snf ../..$(OPENJDK_INSTALL_BASE)/bin/* .
+	cd $(@D)/build/linux-riscv64-normal-${OPENJDK_JVM_VARIANT}-${DEBUG_LEVEL}/images/
+#	tar cvf jdk.tar jdk
+#	mv jdk.tar $(TARGET_DIR)/root/
+	cd -
 endef
 
 define OPENJDK_INSTALL_STAGING_CMDS
 	mkdir -p $(STAGING_DIR)/usr/include/jvm
-	cp -dpfr $(@D)/build/linux-*-release/jdk/include/* \
+	cp -dpfr $(@D)/build/linux-*-${DEBUG_LEVEL}/images/jdk/include/* \
 		$(STAGING_DIR)/usr/include/jvm
+	cp -dpfr $(@D)/build/linux-*-${DEBUG_LEVEL}/images/jdk/include/* \
+		$(STAGING_DIR)/usr/include/
 endef
 
 # Demos and includes are not needed on the target
+	#$(RM) -r $(TARGET_DIR)$(OPENJDK_INSTALL_BASE)/include/
 ifeq ($(BR2_PACKAGE_OPENJDK_FULL_JDK),y)
 define OPENJDK_REMOVE_UNEEDED_JDK_DIRECTORIES
-	$(RM) -r $(TARGET_DIR)$(OPENJDK_INSTALL_BASE)/include/
 	$(RM) -r $(TARGET_DIR)$(OPENJDK_INSTALL_BASE)/demo/
 endef
 OPENJDK_TARGET_FINALIZE_HOOKS += OPENJDK_REMOVE_UNEEDED_JDK_DIRECTORIES
