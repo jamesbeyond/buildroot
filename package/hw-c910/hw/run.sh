@@ -49,6 +49,9 @@ elif [ $idx == "ice_fpga" ]; then
 elif [ $idx == "ice_fpga2" ]; then
 	BOARD="ice_fpga2"
 	GDBRESET="noreset"
+elif [ $idx == "x908" ]; then
+	BOARD="x908"
+	GDBRESET="noreset"
 elif [ $idx == "ice2" ]; then
 	BOARD="ice2"
 	GDBRESET="noreset"
