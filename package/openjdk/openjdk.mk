@@ -163,12 +163,13 @@ endef
 # Calling make install always builds and installs the JDK instead of the JRE,
 # which makes manual installation necessary.
 
-#	cd $(TARGET_DIR)/usr/bin && ln -snf ../..$(OPENJDK_INSTALL_BASE)/bin/* .
-#	cp -dpfr $(@D)/build/linux-*-${DEBUG_LEVEL}/images/$(OPENJDK_VARIANT)/* \
-		$(TARGET_DIR)$(OPENJDK_INSTALL_BASE)/
 define OPENJDK_INSTALL_TARGET_CMDS
 	mkdir -p $(TARGET_DIR)$(OPENJDK_INSTALL_BASE)
-	cd $(@D)/build/linux-riscv64-normal-${OPENJDK_JVM_VARIANT}-${DEBUG_LEVEL}/images/
+	cp -dpfr $(@D)/build/linux-*-${DEBUG_LEVEL}/images/$(OPENJDK_VARIANT)/* \
+		$(TARGET_DIR)$(OPENJDK_INSTALL_BASE)/
+	cd $(TARGET_DIR)/usr/bin && ln -snf ../..$(OPENJDK_INSTALL_BASE)/bin/* .
+
+#	cd $(@D)/build/linux-riscv64-normal-${OPENJDK_JVM_VARIANT}-${DEBUG_LEVEL}/images/
 #	tar cvf jdk.tar jdk
 #	mv jdk.tar $(TARGET_DIR)/root/
 	cd -
