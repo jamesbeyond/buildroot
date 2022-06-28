@@ -1,0 +1,28 @@
+From c701055517feaf79d50b1c94116dd865a39c6dd9 Mon Sep 17 00:00:00 2001
+From: Wang Junqiang <wangjunqiang@iscas.ac.cn>
+Date: Fri, 11 Mar 2022 14:38:28 +0800
+Subject: [PATCH] remove go openjdk ci in cpio
+
+---
+ fs/cpio-minimize-thead/cpio-minimize-thead.mk | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/fs/cpio-minimize-thead/cpio-minimize-thead.mk b/fs/cpio-minimize-thead/cpio-minimize-thead.mk
+index 00360e58..2ab0d70c 100644
+--- a/fs/cpio-minimize-thead/cpio-minimize-thead.mk
++++ b/fs/cpio-minimize-thead/cpio-minimize-thead.mk
+@@ -2,6 +2,11 @@ define ROOTFS_CPIO_MINIMIZE_THEAD
+ 	rm -rf $(TARGET_DIR)/usr/lib/ltp*
+ 	rm -rf $(TARGET_DIR)/etc/init.d/S50sshd
+ 	rm -rf $(TARGET_DIR)/etc/init.ci/ltp_run
++	rm -rf $(TARGET_DIR)/ci/go
++	rm -rf $(TARGET_DIR)/etc/init.ci/go_run
++	rm -rf $(TARGET_DIR)/ci/openjdk
++	rm -rf $(TARGET_DIR)/etc/init.ci/openjdk_run
++	rm -rf $(TARGET_DIR)/ci
+ endef
+ 
+ ifeq ($(BR2_PACKAGE_CSKY_CI),y)
+-- 
+2.17.1
+
