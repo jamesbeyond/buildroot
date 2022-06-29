@@ -172,7 +172,7 @@ define OPENJDK_INSTALL_TARGET_CMDS
 #	cd $(@D)/build/linux-riscv64-normal-${OPENJDK_JVM_VARIANT}-${DEBUG_LEVEL}/images/
 #	tar cvf jdk.tar jdk
 #	mv jdk.tar $(TARGET_DIR)/root/
-	cd -
+#	cd -
 endef
 
 define OPENJDK_INSTALL_STAGING_CMDS
