@@ -33,7 +33,7 @@ set $dyn_info_addr  = $rootfs_addr - 0x40
 
 # Load rootfs & kernel
 restore ../rootfs.cpio.gz binary $rootfs_addr
-restore /home/haozy/haijiang/build-rv64/arch/riscv/boot/Image binary $vmlinux_addr
+restore ../Image binary $vmlinux_addr
 
 # Load dtb
 restore hw.dtb binary $dtb_addr
@@ -56,4 +56,4 @@ restore ../fw_dynamic.bin binary $opensbi_addr
 
 set $pc = $opensbi_addr
 
-c
+#c
