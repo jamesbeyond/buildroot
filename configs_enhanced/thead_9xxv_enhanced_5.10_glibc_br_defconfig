@@ -21,8 +21,7 @@ BR2_LINUX_KERNEL_IMAGE=y
 BR2_LINUX_KERNEL_DTS_SUPPORT=y
 BR2_LINUX_KERNEL_INTREE_DTS_NAME="ice light_mpw"
 BR2_LINUX_KERNEL_DTB_IS_SELF_BUILT=y
-#BR2_LINUX_KERNEL_CONFIG_FRAGMENT_FILES="package/linux-patch-thead/linux-5.9.config.fragment board/csky-ci/defconfigs/kernel.pci-9pfs-gpu.fragment board/csky-ci/defconfigs/kernel.torture-test.fragment"
-BR2_LINUX_KERNEL_CONFIG_FRAGMENT_FILES="board/csky-ci/defconfigs/kernel.torture-test.fragment"
+
 # Bootloader
 BR2_TARGET_OPENSBI=y
 BR2_TARGET_OPENSBI_USE_PLAT=y
