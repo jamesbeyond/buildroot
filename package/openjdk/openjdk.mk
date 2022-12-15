@@ -165,9 +165,9 @@ endef
 
 define OPENJDK_INSTALL_TARGET_CMDS
 	mkdir -p $(TARGET_DIR)$(OPENJDK_INSTALL_BASE)
-	cp -dpfr $(@D)/build/linux-*-${DEBUG_LEVEL}/images/$(OPENJDK_VARIANT)/* \
-		$(TARGET_DIR)$(OPENJDK_INSTALL_BASE)/
-	cd $(TARGET_DIR)/usr/bin && ln -snf ../..$(OPENJDK_INSTALL_BASE)/bin/* .
+#	cp -dpfr $(@D)/build/linux-*-${DEBUG_LEVEL}/images/$(OPENJDK_VARIANT)/* \
+#		$(TARGET_DIR)$(OPENJDK_INSTALL_BASE)/
+#	cd $(TARGET_DIR)/usr/bin && ln -snf ../..$(OPENJDK_INSTALL_BASE)/bin/* .
 
 #	cd $(@D)/build/linux-riscv64-normal-${OPENJDK_JVM_VARIANT}-${DEBUG_LEVEL}/images/
 #	tar cvf jdk.tar jdk
