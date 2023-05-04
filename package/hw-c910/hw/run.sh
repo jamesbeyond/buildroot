@@ -79,8 +79,8 @@ done
 
 set -ex
 
-DDRINIT=ddrinit.$BOARD.txt
-GDBINIT=gdbinit.$BOARD.txt
+DDRINIT=$BOARD.ddrinit.txt
+GDBINIT=$BOARD.gdbinit.txt
 DTS=$BOARD.dts.txt
 
 echo "Use config" $NRCORE $BOARD
