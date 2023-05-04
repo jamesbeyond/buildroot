@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ $# -lt 1 -o $# -gt 4 ] ; then
 	echo "Usage: . run.sh <ip:port> [an/eg/eg2/ve/ice_evb/ice_fpga/ice_fpga2/th] [s/m] noreset"
 	echo "Usage: [an/eg/eg2/ve/ice_evb/ice_fpga/ice_fpga2/th] is for board name"
