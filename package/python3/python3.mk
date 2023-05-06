@@ -7,7 +7,7 @@
 PYTHON3_VERSION_MAJOR = 3.9
 PYTHON3_VERSION = $(PYTHON3_VERSION_MAJOR).1
 PYTHON3_SOURCE = Python-$(PYTHON3_VERSION).tar.xz
-PYTHON3_SITE = ftp://eu95t-iotsoftwareftp01.eng.t-head.cn/Test/Test/buildroot2-dl/python3/
+PYTHON3_SITE = ftp://eu95t-iotsoftwareftp01.eng.t-head.cn/Test/Test/buildroot2-dl/python3
 PYTHON3_LICENSE = Python-2.0, others
 PYTHON3_LICENSE_FILES = LICENSE
 
