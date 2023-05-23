@@ -11,10 +11,11 @@
 
 ILLEGAL_CI_ROOT = $(TARGET_DIR)/../build/illegal_inst_test
 
-define PYTHON3_CI_INSTALL_TARGET_CMDS
+define ILLEGAL_CI_INSTALL_TARGET_CMDS
 	mkdir -p $(ILLEGAL_CI_ROOT)
-	cd $(ILLEGAL_CI_ROOT)
-	echo "xxxxx"
+	cp package/illegal-ci/illegal-inst-test.py $(ILLEGAL_CI_ROOT)
+	cd $(ILLEGAL_CI_ROOT); python3 illegal-inst-test.py  -l 30 -c ftp://eu95t-iotsoftwareftp01.eng.t-head.cn/Test/Test/Toolschain/gnu-riscv/V2.6.1/Xuantie-900-gcc-linux-5.10.4-glibc-x86_64-V2.6.1.tar.gz  \
+	-q ftp://eu95t-iotsoftwareftp01.eng.t-head.cn/Test/Test/qemu/V4.0.0/xuantie-qemu-x86_64-Ubuntu-18.04.tar.gz  -t c908v
 	
 endef
 
