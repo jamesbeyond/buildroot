@@ -156,7 +156,8 @@ class myThread (threading.Thread):
             command=' timeout 30 ' + root_dir + '/install_qemu/bin/qemu-riscv64   -cpu any ' + elf_new_name
             result=os.system(command)
             #qemu give Illegal instruction or crash
-            if result == 4   :
+            #note -------  The return value of the result variable depends on the operating system ------------------------
+            if result == 33792   :
                 command='cp ' + case_name +  ' ./testcase/' + time_str + '_' + str(self.threadID)  +  '.c'
                 os.system(command)
                 command='cp ' + assemble_new_file  +  ' ./testcase/' + time_str +  '_' + str(self.threadID)  +  '.s'
@@ -192,6 +193,7 @@ def build_testcase(loop):
             t.join()
         testcase_num   = testcase_num  + 1
         print('xxxxxxxxxxxxxxxx',testcase_num)
+        os.system('rm core.*')
         if testcase_num  > all_num :
             break
 
