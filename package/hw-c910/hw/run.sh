@@ -79,7 +79,7 @@ done
 
 set -ex
 
-DDRINIT=$BOARD.ddrinit.txt
+DDRINIT=$BOARD.socinit.txt
 GDBINIT=$BOARD.gdbinit.txt
 DTS=$BOARD.dts.txt
 
