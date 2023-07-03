@@ -215,7 +215,7 @@
 			>;
 			reg-names = "gmac", "clk_mgr_reg", "phy_if_reg", "txclk_dir_reg" ;
 			interrupt-parent = <&intc>;
-			interrupts = <3>;
+			interrupts = <21>;
 			interrupt-names = "macirq";
 			clocks = <&dummy_apb>;
 			clock-names = "stmmaceth";
