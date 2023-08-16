@@ -45,6 +45,16 @@ restore ../fw_dynamic.bin binary $opensbi_addr
 # set $pc to start point
 set $pc = $opensbi_addr
 
+# check cpu configuration registers 
+i r msmpr
+i r mcor
+i r mccr2
+i r mhcr
+i r mxstatus
+i r mhint
+i r mhint2
+
 # Config debug Linux Kernel (uncomment if needed)
 #file  ../vmlinux
 #source ../gdbmacros.txt
+

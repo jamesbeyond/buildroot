@@ -5,7 +5,7 @@ set height 0
 set $mcor = 0x70013
 
 # Enable L2 Cache
-set $mccr2 = 0xe0010009
+set $mccr2 = 0xe0410009
 
 # Enable L1 Cache
 set $mhcr = 0x11ff
@@ -14,7 +14,7 @@ set $mhcr = 0x11ff
 set $mxstatus = 0x638000
 set $mhint = 0x16e30c
 
-set $opensbi_addr = 0xc0000000
+set $opensbi_addr = 0x00000000
 set $vmlinux_addr = $opensbi_addr + 0x00200000
 set $rootfs_addr  = $opensbi_addr + 0x04000000
 set $dtb_addr  = $rootfs_addr - 0x00100000
